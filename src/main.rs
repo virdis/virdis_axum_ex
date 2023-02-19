@@ -1,3 +1,11 @@
+mod utils;
+mod static_pages;
+
+use axum::Router;
+
+
+
 fn main() {
-    println!("Hello, world!");
+    
+    todo!()
 }
