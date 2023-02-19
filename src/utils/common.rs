@@ -1,7 +1,7 @@
 use askama::Template;
 use axum::{response::{IntoResponse, Html}, http::StatusCode};
 
-pub struct HtmlTemplate<T>(T);
+pub struct HtmlTemplate<T>(pub T);
 
 impl<T> IntoResponse for HtmlTemplate<T> 
 where 
