@@ -10,11 +10,16 @@ edition = "2021"
 # templating 
 askama = "0.11.1"
 
-# web frameworkd
+# web framework
 axum = { version = "0.6.7", features = ["http2"] }
 
-# session
+# cookie based session
 axum-sessions = "0.4.1"
+
+# async session middleware
+async-session = "3.0.0"
+
+# config for various environments
 config = "0.13.3"
 
 # password hashing

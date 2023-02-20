@@ -1,5 +1,6 @@
 mod utils;
 mod static_pages;
+mod kv;
 
 use std::net::SocketAddr;
 
