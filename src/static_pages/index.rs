@@ -1,18 +1,14 @@
 use askama::Template;
-use axum::response::IntoResponse;
+use axum::{response::IntoResponse, extract::State};
 
-use crate::utils::common::HtmlTemplate;
+use crate::utils::common::{HtmlTemplate, Store};
 
 #[derive(Template)]
 #[template(path = "index.html")]
-struct IndexTemplate {
-    title: String,
-}
+struct IndexTemplate {}
 
 
 pub async fn index() -> impl IntoResponse {
-    let template = IndexTemplate {
-        title: "Sandeep Virdi's Blog".to_string(),
-    };
+    let template = IndexTemplate {};
     HtmlTemplate(template)
 }

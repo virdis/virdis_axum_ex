@@ -1,7 +1,13 @@
 use askama::Template;
 use axum::{response::{IntoResponse, Html}, http::StatusCode};
+use sled::Tree;
 use tokio::signal::{unix::signal, self};
 
+#[derive(Clone)]
+pub struct Store {
+    pub meta: Tree, 
+    pub body: Tree,
+}
 pub struct HtmlTemplate<T>(pub T);
 
 impl<T> IntoResponse for HtmlTemplate<T> 
