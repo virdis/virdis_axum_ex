@@ -1,7 +1,8 @@
 use askama::Template;
 use async_session::serde_json;
-use axum::{response::IntoResponse, Extension};
+use axum::{response::IntoResponse, Extension, extract::Path};
 use serde::{Serialize, Deserialize};
+use sled::IVec;
 
 use crate::utils::common::{Store, HtmlTemplate};
 
@@ -18,27 +19,42 @@ pub struct Article {
 }
 
 #[derive(Template)]
-#[template(path = "posts.html")]
+#[template(path = "index.html")]
 struct PostsTemplate {
-    posts: Vec<Article>,
+    posts: Vec<MetaData>,
+}
+
+#[derive(Template)]
+#[template(path = "post.html")]
+struct PostTemplate {
+    post: Article,
 }
 
 pub async fn posts(Extension(store): Extension<Store>) -> impl IntoResponse {
-    let mut articles: Vec<Article> = vec![];
+    let mut articles: Vec<MetaData> = vec![];
     store.meta.iter()
         .for_each(|key_value| {
-            let (key, value) = key_value.unwrap();
+            let (_ , value) = key_value.unwrap();
             let value_str = std::str::from_utf8(value.as_ref()).expect("failed to convert value to &str");
             let meta: MetaData = serde_json::from_str(value_str).expect("failed to convert &str to MetaData");
-            let opt_body = store.body.get(key).expect("failed to find body with key");
-            if let Some(body) = opt_body {
-                let body = std::str::from_utf8(body.as_ref()).expect("failed to convert IVec body to &str");
-                let article = Article { meta, body: body.to_string() };
-                articles.push(article);
-            } 
+            articles.push(meta);
         });
-        // TODO - remove title 
         let posts_template = PostsTemplate { posts: articles };
         HtmlTemplate(posts_template)
-
 }   
+
+pub async fn post(
+    Path(key): Path<String>,
+    Extension(store): Extension<Store>
+) -> impl IntoResponse {
+    let key = &key[..];
+    let opt_body = store.body.get(key).expect("did not find content for key");
+    let body = opt_body.unwrap();
+    let body = String::from_utf8(body.as_ref().to_vec()).expect("failed to convert IVec to String");
+    let meta_opt = store.meta.get(key).expect("did find meta data for key");
+    let meta = meta_opt.unwrap();
+    let meta_str = std::str::from_utf8(meta.as_ref()).expect("failed to convert u8[..] to str");
+    let meta: MetaData = serde_json::from_str(meta_str).expect("failed to convert &str to MetaData");
+    let post_template = PostTemplate { post : Article { meta, body }};
+    HtmlTemplate(post_template);
+}

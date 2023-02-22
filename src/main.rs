@@ -25,9 +25,11 @@ async fn main() {
 
     let app = Router::new()
         .merge(static_pages::routes())
+        .merge(dynamic_pages::index_route())
+        .merge(dynamic_pages::post_route())
         .layer(Extension(store));
-    
-    let address = SocketAddr::from(([0, 0, 0, 0], 8000));
+
+    let address = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 8000));
 
 // TODO - add graceful shutdown
     axum::Server::bind(&address)
