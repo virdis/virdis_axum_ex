@@ -2,6 +2,7 @@ mod utils;
 mod static_pages;
 mod kv;
 mod dynamic_pages;
+mod login;
 
 use std::{net::SocketAddr, sync::Arc};
 

@@ -27,7 +27,7 @@ struct PostsTemplate {
 #[derive(Template)]
 #[template(path = "post.html")]
 struct PostTemplate {
-    post: Article,
+    pub post: Article,
 }
 
 pub async fn posts(Extension(store): Extension<Store>) -> impl IntoResponse {
