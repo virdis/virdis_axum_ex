@@ -1,21 +1,19 @@
 use async_session::serde_json;
-use axum_login::{AuthUser, secrecy::SecretVec};
-use serde::{Serialize, Deserialize};
+use axum_login::{secrecy::SecretVec, AuthUser};
+use serde::{Deserialize, Serialize};
 use sled::IVec;
 
-
- #[derive(Debug, Clone, PartialEq, PartialOrd)]
- enum Role {
-     User,
-     Admin,
- }
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+enum Role {
+    User,
+    Admin,
+}
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct User {
-    username: String, 
-    password_hash: String, 
+    username: String,
+    password_hash: String,
 }
-
 
 impl AuthUser<Role> for User {
     fn get_id(&self) -> String {

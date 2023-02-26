@@ -1,18 +1,21 @@
 use askama::Template;
-use axum::{response::{IntoResponse, Html}, http::StatusCode};
+use axum::{
+    http::StatusCode,
+    response::{Html, IntoResponse},
+};
 use sled::Tree;
-use tokio::signal::{unix::signal, self};
+use tokio::signal::{self, unix::signal};
 
 #[derive(Clone)]
 pub struct Store {
-    pub meta: Tree, 
+    pub meta: Tree,
     pub body: Tree,
 }
 pub struct HtmlTemplate<T>(pub T);
 
-impl<T> IntoResponse for HtmlTemplate<T> 
-where 
-    T: Template, 
+impl<T> IntoResponse for HtmlTemplate<T>
+where
+    T: Template,
 {
     fn into_response(self) -> axum::response::Response {
         match self.0.render() {
@@ -21,13 +24,12 @@ where
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("Failed to render template. Error Details: {:?}", error),
             )
-            .into_response()
+                .into_response(),
         }
     }
-}   
+}
 
 // Graceful Shutdown //
-
 
 pub async fn shutdown_signal() {
     let ctrl_c = async {
@@ -52,5 +54,5 @@ pub async fn shutdown_signal() {
         _ = terminate => {},
     }
 
-   // tracing::debug!("signal received, starting graceful shutdown");
+    // tracing::debug!("signal received, starting graceful shutdown");
 }
