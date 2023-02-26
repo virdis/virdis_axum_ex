@@ -58,8 +58,8 @@ mod test {
 
     use super::*;
     use assert_fs::TempDir;
-    use axum_sessions::async_session::chrono::{Utc, Days};
     use async_std::task;
+    use axum_sessions::async_session::chrono::{Days, Utc};
 
     async fn test_store() -> (SledSessionStore, TempDir) {
         let temp = TempDir::new().unwrap();
@@ -68,14 +68,13 @@ mod test {
         (store, temp)
     }
 
-
     #[async_std::test]
     async fn create_new_session() -> Result {
         let (store, dir) = test_store().await;
         let mut session = Session::new();
         let duration = Utc::now();
         let duration_add = duration.checked_add_days(Days::new(2)).unwrap();
-        session.set_expiry(duration_add);  
+        session.set_expiry(duration_add);
         let mut book_reviews = HashMap::new();
 
         book_reviews.insert(
@@ -98,33 +97,32 @@ mod test {
         session.insert("book_reviews", book_reviews)?;
         let cloned = session.clone();
         let cookie_value = store.store_session(session).await?.unwrap();
-        
+
         let loaded_session = store.load_session(cookie_value).await?.unwrap();
         assert_eq!(cloned.id(), loaded_session.id());
-        
+
         dir.close().unwrap();
         Ok(())
-    } 
-
+    }
 
     #[async_std::test]
     async fn destroy_session() -> Result {
-       let (store, dir) = test_store().await;
-       let mut session = Session::new();
-       let id = session.id();
-       session.insert("book_reviews_destroy", "lost all books ........")?;
-       let cookie_value = store.store_session(session).await?.unwrap();
-       let mut iter = store.store.iter();
+        let (store, dir) = test_store().await;
+        let mut session = Session::new();
+        let id = session.id();
+        session.insert("book_reviews_destroy", "lost all books ........")?;
+        let cookie_value = store.store_session(session).await?.unwrap();
+        let mut iter = store.store.iter();
 
-       let no_present = store.load_session(cookie_value.clone()).await?.unwrap();
-       let result = store.destroy_session(no_present).await?;
-       assert_eq!((), result);
-       iter.for_each(|res| { 
-           let (key, _) = res.unwrap();
-           let s = std::str::from_utf8(&key[..]).unwrap();
-           println!("Iterating over keys: {:?}", s)    
-       });
-       dir.close().unwrap();
-       Ok(())
-   } 
+        let no_present = store.load_session(cookie_value.clone()).await?.unwrap();
+        let result = store.destroy_session(no_present).await?;
+        assert_eq!((), result);
+        iter.for_each(|res| {
+            let (key, _) = res.unwrap();
+            let s = std::str::from_utf8(&key[..]).unwrap();
+            println!("Iterating over keys: {:?}", s)
+        });
+        dir.close().unwrap();
+        Ok(())
+    }
 }

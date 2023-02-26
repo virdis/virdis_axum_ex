@@ -11,11 +11,11 @@ enum Role {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct User {
-    username: String,
-    password_hash: String,
+    pub (crate) username: String,
+    pub (crate) password_hash: String,
 }
 
-impl AuthUser<Role> for User {
+impl AuthUser for User {
     fn get_id(&self) -> String {
         let hash = twox_hash::xxh3::hash64(self.username.as_ref());
         format!("{}", hash)
@@ -23,11 +23,7 @@ impl AuthUser<Role> for User {
 
     fn get_password_hash(&self) -> axum_login::secrecy::SecretVec<u8> {
         SecretVec::new(self.password_hash.clone().into())
-    }
-
-    fn get_role(&self) -> Option<Role> {
-        None
-    }
+        }
 }
 
 impl From<IVec> for User {
