@@ -1,0 +1,19 @@
+
+# user crendetials for dev 
+user = { username = "test", password = "test" }
+
+[blogstore]
+key_space_name = "blog"
+path = "/home/virdis/Source/rust/virdis_me/temp/blog"
+
+[metastore]
+key_space_name = "meta"
+path = "/home/virdis/Source/rust/virdis_me/temp/meta"
+
+[sessionstore]
+key_space_name = "session"
+path = "/home/virdis/Source/rust/virdis_me/temp/session"
+
+[userstore]
+key_space_name = "user"
+path = "/home/virdis/Source/rust/virdis_me/temp/users" 

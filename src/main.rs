@@ -3,18 +3,22 @@ mod kv;
 mod login;
 mod static_pages;
 mod utils;
+mod settings;
+
+use config::Config;
 
 use std::{net::SocketAddr, sync::Arc};
-
-use axum::ServiceExt;
 use axum::{Extension, Router};
-use sled::Db;
 use utils::common::Store;
 
 #[tokio::main]
 async fn main() {
     //TODO: Use config file for different environments.
     // TODO: Use right configs sled
+    let settings = Config::builder()
+        .add_source(config::File::with_name(""))
+        .build();
+    
 
     let db = sled::open("/home/virdis/Source/rust/virdis_me/temp/").expect("failed to open db");
     let meta = db.open_tree("meta").expect("failed to open meta keyspace");
@@ -36,3 +40,4 @@ async fn main() {
         .await
         .unwrap();
 }
+
