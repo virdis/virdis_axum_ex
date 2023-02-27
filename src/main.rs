@@ -1,14 +1,14 @@
 mod dynamic_pages;
 mod kv;
 mod login;
+mod settings;
 mod static_pages;
 mod utils;
-mod settings;
 
 use config::Config;
 
-use std::{net::SocketAddr, sync::Arc};
 use axum::{Extension, Router};
+use std::{net::SocketAddr, sync::Arc};
 use utils::common::Store;
 
 #[tokio::main]
@@ -18,7 +18,6 @@ async fn main() {
     let settings = Config::builder()
         .add_source(config::File::with_name(""))
         .build();
-    
 
     let db = sled::open("/home/virdis/Source/rust/virdis_me/temp/").expect("failed to open db");
     let meta = db.open_tree("meta").expect("failed to open meta keyspace");
@@ -40,4 +39,3 @@ async fn main() {
         .await
         .unwrap();
 }
-

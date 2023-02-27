@@ -73,8 +73,13 @@ mod test {
         let id = u.get_id();
         let id = id.as_ref();
         let json_user = serde_json::to_string(&u).expect("failed to convert User to string");
-        user_store.inner.insert(id, IVec::from(json_user.as_bytes()));
-        let u_db = user_store.load_user(&id).await.expect("failed to find user by id");
+        user_store
+            .inner
+            .insert(id, IVec::from(json_user.as_bytes()));
+        let u_db = user_store
+            .load_user(&id)
+            .await
+            .expect("failed to find user by id");
         let u_db = u_db.unwrap();
         assert_eq!(u_db.username, u.username);
         assert_eq!(u_db.password_hash, u.password_hash);

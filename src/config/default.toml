@@ -1,6 +1,8 @@
 
 # user crendetials for dev 
-user = { username = "test", password = "test" }
+[user]
+username = "test"
+password = "test"
 
 [blogstore]
 key_space_name = "blog"
