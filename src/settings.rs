@@ -2,46 +2,47 @@ use config::{Config, ConfigError};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-struct Metastore {
-    key_space_name: String,
-    path: String,
+pub struct Sledpath {
+    pub path: String,
+}
+#[derive(Debug, Deserialize)]
+pub struct Metastore {
+    pub keyspace: String,
 }
 
 #[derive(Debug, Deserialize)]
-struct Blogstore {
-    key_space_name: String,
-    path: String,
+pub struct Bodystore {
+    pub keyspace: String,
 }
 
 #[derive(Debug, Deserialize)]
-struct Sessionstore {
-    key_space_name: String,
-    path: String,
+pub struct Sessionstore {
+    pub keyspace: String,
 }
 
 #[derive(Debug, Deserialize)]
-struct Userstore {
-    key_space_name: String,
-    path: String,
+pub struct Userstore {
+    pub keyspace: String,
 }
 
 #[derive(Debug, Deserialize)]
-struct User {
-    username: String,
-    password: String,
+pub struct User {
+    pub username: String,
+    pub password: String,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Settings {
-    user: User,
-    blogstore: Blogstore,
-    metastore: Metastore,
-    sessionstore: Sessionstore,
-    userstore: Userstore,
+    pub user: User,
+    pub sledpath: Sledpath,
+    pub bodystore: Bodystore,
+    pub metastore: Metastore,
+    pub sessionstore: Sessionstore,
+    pub userstore: Userstore,
 }
 
 impl Settings {
-    fn new() -> Result<Self, ConfigError> {
+    pub fn new() -> Result<Self, ConfigError> {
         // TODO: Add file location for production settings
         let production_settings: Result<Config, ConfigError> = Config::builder()
             .add_source(config::File::with_name(""))

@@ -4,18 +4,17 @@
 username = "test"
 password = "test"
 
-[blogstore]
-key_space_name = "blog"
-path = "/home/virdis/Source/rust/virdis_me/temp/blog"
+[sledpath]
+path = "/home/virdis/Source/rust/virdis_me/temp/"
+
+[bodystore]
+keyspace = "body"
 
 [metastore]
-key_space_name = "meta"
-path = "/home/virdis/Source/rust/virdis_me/temp/meta"
+keyspace = "meta"
 
 [sessionstore]
-key_space_name = "session"
-path = "/home/virdis/Source/rust/virdis_me/temp/session"
+keyspace = "session"
 
 [userstore]
-key_space_name = "user"
-path = "/home/virdis/Source/rust/virdis_me/temp/users" 
+keyspace = "user"

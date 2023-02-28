@@ -4,7 +4,7 @@ use axum::{extract::Path, response::IntoResponse, Extension};
 use serde::{Deserialize, Serialize};
 use sled::IVec;
 
-use crate::utils::common::{HtmlTemplate, Store};
+use crate::utils::common::{HtmlTemplate, BlogStore};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MetaData {
@@ -30,7 +30,7 @@ struct PostTemplate {
     pub post: Article,
 }
 
-pub async fn posts(Extension(store): Extension<Store>) -> impl IntoResponse {
+pub async fn posts(Extension(store): Extension<BlogStore>) -> impl IntoResponse {
     let mut articles: Vec<MetaData> = vec![];
     store.meta.iter().for_each(|key_value| {
         let (_, value) = key_value.unwrap();
@@ -46,7 +46,7 @@ pub async fn posts(Extension(store): Extension<Store>) -> impl IntoResponse {
 
 pub async fn post(
     Path(key): Path<String>,
-    Extension(store): Extension<Store>,
+    Extension(store): Extension<BlogStore>,
 ) -> impl IntoResponse {
     let key = &key[..];
     let opt_body = store.body.get(key).expect("did not find content for key");

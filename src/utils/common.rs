@@ -7,7 +7,7 @@ use sled::Tree;
 use tokio::signal::{self, unix::signal};
 
 #[derive(Clone)]
-pub struct Store {
+pub struct BlogStore {
     pub meta: Tree,
     pub body: Tree,
 }

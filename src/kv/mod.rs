@@ -1,2 +1,1 @@
-mod sled_session_store;
-mod store;
+pub(crate) mod sled_session_store;

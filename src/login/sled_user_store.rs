@@ -1,10 +1,8 @@
 use std::marker::PhantomData;
 
-use super::auth_user::*;
 use async_session::async_trait;
 use axum_login::{AuthUser, UserStore};
 use sled::{IVec, Tree};
-use std::io::{Error, ErrorKind};
 
 #[derive(Clone, Debug)]
 pub struct SledUserStore<User, Role = ()> {
@@ -14,7 +12,7 @@ pub struct SledUserStore<User, Role = ()> {
 }
 
 impl<User, Role> SledUserStore<User, Role> {
-    fn new(inner: Tree) -> Self {
+    pub fn new(inner: Tree) -> Self {
         Self {
             inner,
             _user_type: Default::default(),
@@ -73,7 +71,7 @@ mod test {
         let id = u.get_id();
         let id = id.as_ref();
         let json_user = serde_json::to_string(&u).expect("failed to convert User to string");
-        user_store
+        let _ = user_store
             .inner
             .insert(id, IVec::from(json_user.as_bytes()));
         let u_db = user_store
