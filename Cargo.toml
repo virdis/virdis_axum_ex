@@ -52,6 +52,9 @@ eyre = "0.6.8"
 # fixture for filesytems
 assert_fs = "1.0.10"
 
+# generate random data
+rand = "0.8.5"
+
 # async utilities, use attributes for testing
 [dependencies.async-std]
 version = "1.12.0"

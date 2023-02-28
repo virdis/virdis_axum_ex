@@ -6,7 +6,10 @@ mod static_pages;
 mod utils;
 
 use axum::{Extension, Router};
+use axum_sessions::SessionLayer;
 use kv::sled_session_store::SledSessionStore;
+use rand::seq::SliceRandom;
+use rand::{Rng, random};
 use settings::Settings;
 use std::{net::SocketAddr};
 use utils::common::BlogStore;
@@ -29,10 +32,20 @@ async fn main() {
             let blogstore = BlogStore { meta, body };
  
             let user = db.open_tree(settings.userstore.keyspace).expect("failed to open user keyspace");
-            let sled_user_store:SledUserStore<User, ()> = SledUserStore::new(user);
+            let sled_user_store: SledUserStore<User, ()> = SledUserStore::new(user);
 
-            let sled_session_store = SledSessionStore::new(settings.sessionstore.keyspace.as_str());
-                
+            
+            let mut rng = rand::thread_rng();
+
+            let mut nums: Vec<u8> = (0..128).collect();
+            nums.shuffle(&mut rng);
+            
+
+            let sled_session_store = SledSessionStore::new(settings
+                .sessionstore.keyspace.as_str()).expect("failed to create Sled Session Store");
+            let session_layer = SessionLayer::new(sled_session_store, &nums[..]);
+            
+
             let app = Router::new()
                 .merge(static_pages::routes())
                 .merge(dynamic_pages::index_route())
