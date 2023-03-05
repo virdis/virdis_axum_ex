@@ -5,40 +5,23 @@ use serde::Deserialize;
 pub struct Sledpath {
     pub path: String,
 }
+// TODO - Come up with a better name
 #[derive(Debug, Deserialize)]
-pub struct Metastore {
-    pub keyspace: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Bodystore {
-    pub keyspace: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Sessionstore {
-    pub keyspace: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Userstore {
-    pub keyspace: String,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct User {
+pub struct AUser {
     pub username: String,
     pub password: String,
 }
 
 #[derive(Debug, Deserialize)]
+pub struct Salt {
+    pub value: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct Settings {
-    pub user: User,
+    pub auser: AUser,
+    pub salt: Salt,
     pub sledpath: Sledpath,
-    pub bodystore: Bodystore,
-    pub metastore: Metastore,
-    pub sessionstore: Sessionstore,
-    pub userstore: Userstore,
 }
 
 impl Settings {
@@ -64,6 +47,7 @@ impl Settings {
 #[cfg(test)]
 mod test {
     use config::Config;
+    use rand::seq::SliceRandom;
 
     use super::*;
 

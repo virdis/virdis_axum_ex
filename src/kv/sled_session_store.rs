@@ -1,15 +1,15 @@
+use std::{sync::Arc};
+
 use async_session::{async_trait, serde_json, Result, Session, SessionStore};
 use sled::{IVec, Tree};
 
 #[derive(Debug, Clone)]
 pub struct SledSessionStore {
-    store: Tree,
+    store: Arc<Tree>,
 }
 
 impl SledSessionStore {
-    pub fn new(path: &str) -> Result<Self> {
-        let db = sled::open(path)?;
-        let store = db.open_tree("sessions")?;
+    pub fn new(store: Arc<Tree>) -> Result<Self> {
         Ok(SledSessionStore { store })
     }
 }
@@ -64,7 +64,8 @@ mod test {
     async fn test_store() -> (SledSessionStore, TempDir) {
         let temp = TempDir::new().unwrap();
         let mut path = temp.path().as_os_str().to_str().unwrap();
-        let store = SledSessionStore::new(path).unwrap();
+        let db = sled::open(path).expect("failed to open db");
+        let store = SledSessionStore::new(Arc::new(db.open_tree("test").unwrap())).unwrap();
         (store, temp)
     }
 

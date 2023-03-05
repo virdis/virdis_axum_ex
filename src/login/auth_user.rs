@@ -3,19 +3,13 @@ use axum_login::{secrecy::SecretVec, AuthUser};
 use serde::{Deserialize, Serialize};
 use sled::IVec;
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-enum Role {
-    User,
-    Admin,
-}
-
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct User {
+pub struct BlogAuthor {
     pub(crate) username: String,
     pub(crate) password_hash: String,
 }
 
-impl AuthUser for User {
+impl AuthUser for BlogAuthor {
     fn get_id(&self) -> String {
         let hash = twox_hash::xxh3::hash64(self.username.as_ref());
         format!("{}", hash)
@@ -26,10 +20,11 @@ impl AuthUser for User {
     }
 }
 
-impl From<IVec> for User {
+impl From<IVec> for BlogAuthor {
     fn from(value: IVec) -> Self {
         let str = std::str::from_utf8(value.as_ref()).expect("failed to convert IVec to User");
-        let user: User = serde_json::from_str(str).expect("failed to convert str to CustomUser");
+        let user: BlogAuthor =
+            serde_json::from_str(str).expect("failed to convert str to CustomUser");
         user
     }
 }

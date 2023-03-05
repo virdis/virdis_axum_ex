@@ -1,15 +1,27 @@
+use std::sync::Arc;
+
 use askama::Template;
 use axum::{
     http::StatusCode,
     response::{Html, IntoResponse},
 };
 use sled::Tree;
-use tokio::signal::{self, unix::signal};
+use tokio::signal::{self};
+
+use crate::login::{auth_user::BlogAuthor, sled_user_store::SledUserStore};
+
+pub type MyAuthContext =
+    axum_login::extractors::AuthContext<BlogAuthor, SledUserStore<BlogAuthor>, ()>;
 
 #[derive(Clone)]
 pub struct BlogStore {
-    pub meta: Tree,
-    pub body: Tree,
+    pub store: Arc<Tree>,
+}
+
+#[derive(Clone)]
+pub struct AppState {
+    pub blogstore: BlogStore,
+    pub userstore: SledUserStore<BlogAuthor>,
 }
 pub struct HtmlTemplate<T>(pub T);
 
@@ -46,13 +58,9 @@ pub async fn shutdown_signal() {
             .await;
     };
 
-    //#[cfg(not(unix))]
-    //let terminate = std::future::pending::<()>();
-
     tokio::select! {
         _ = ctrl_c => {},
         _ = terminate => {},
     }
 
-    // tracing::debug!("signal received, starting graceful shutdown");
 }

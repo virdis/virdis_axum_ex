@@ -1,20 +1,12 @@
 
 # user crendetials for dev 
-[user]
+[auser]
 username = "test"
 password = "test"
 
+# salt for password hashing 
+[salt]
+value = "7455e549085dd8e718ce"
+
 [sledpath]
 path = "/home/virdis/Source/rust/virdis_me/temp/"
-
-[bodystore]
-keyspace = "body"
-
-[metastore]
-keyspace = "meta"
-
-[sessionstore]
-keyspace = "session"
-
-[userstore]
-keyspace = "user"
